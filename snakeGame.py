@@ -1,23 +1,24 @@
 import pygame
 import random
 
-snake_speed = 15
-
-window_x = 500
-window_y = 500
-
-pygame.init()
-screen = pygame.display.set_mode((window_x, window_y))
-
-# FPS (frames per second) controller
-fps = pygame.time.Clock()
-
 black = pygame.Color(0, 0, 0)
 white = pygame.Color(255, 255, 255)
 red = pygame.Color(255, 0, 0)
 green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
 bagground = pygame.Color(55, 55, 55)
+
+snake_speed = 15
+
+window_x = 500
+window_y = 500
+
+pygame.init()
+pygame.display.set_caption("wild Game!!!")
+screen = pygame.display.set_mode((window_x, window_y))
+
+# FPS (frames per second) controller
+fps = pygame.time.Clock()
 
 snake_head = [100,100]
 snake_body = [[100,100],[90,100],[80,100],[70,100]]
@@ -42,21 +43,18 @@ def drawApple():
 running = True
 while running:
 
-    # Did the user click the window close button?
+    # handling key events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    # handling key events
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
                 change_to = "UP"
-            if event.key == pygame.K_s:
+            if event.key == pygame.K_DOWN:
                 change_to = "DOWN"
-            if event.key == pygame.K_a:
+            if event.key == pygame.K_LEFT:
                 change_to = "LEFT"
-            if event.key == pygame.K_d:
+            if event.key == pygame.K_RIGHT:
                 change_to = "RIGHT"
 
     if change_to == "UP" and snake_dir != "DOWN":
@@ -96,9 +94,11 @@ while running:
 
     for snakePart in snake_body[1:]:
         if snake_head[0] == snakePart[0] and snake_head[0] == snakePart[0]:
-            # Game over
-            pass
+            print("game over")
     
+    if snake_head[0] <= 0 or snake_head[0] >= window_x+10 or snake_head[1] <= 0 or snake_head[1] >= window_y+10:
+        print("game over")
+
     # Refresh game screen
     pygame.display.update()
  
