@@ -18,10 +18,20 @@ class Snake():
     def __init__(self):
         pass
 
-    snakeHead = [10,10]
-    snakeBoddy = [[10,11],[10,12]]
+    snake_head = [10,10]
+    snake_body = [[10,10],[10,11],[10,12]]
 
-    def placeSnake():
+    snake_body = [100, 50]
+ 
+    # defining first 4 blocks of snake
+    # body
+    snake_body = [  [100, 50],
+                    [90, 50],
+                    [80, 50],
+                    [70, 50]
+                ]
+
+    def drawSnake():
         #place snake
         pass
 
@@ -39,8 +49,20 @@ class DrawMap():
 
 if __name__ == '__main__':
 
+    window_x = 500
+    window_y = 500
+
     pygame.init()
-    screen = pygame.display.set_mode([500, 500])
+    screen = pygame.display.set_mode((window_x, window_y))
+    
+    # FPS (frames per second) controller
+    fps = pygame.time.Clock()
+
+    black = pygame.Color(0, 0, 0)
+    white = pygame.Color(255, 255, 255)
+    red = pygame.Color(255, 0, 0)
+    green = pygame.Color(0, 255, 0)
+    blue = pygame.Color(0, 0, 255)
 
     running = True
     while running:
