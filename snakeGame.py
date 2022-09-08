@@ -8,7 +8,7 @@ green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
 bagground = pygame.Color(55, 55, 55)
 
-snake_speed = 15
+snake_speed = 60
 
 window_x = 500
 window_y = 500
@@ -28,6 +28,7 @@ change_to = snake_dir
 fruit_pos = [0, 0]
 fruit_exist = False
 
+score = 0
 
 
 def drawApple():
@@ -38,7 +39,9 @@ def drawApple():
     pygame.draw.rect(screen, red, pygame.Rect(fruit_pos[0], fruit_pos[1], 10, 10))
     fruit_exist = True
 
-#placeApple()
+def gameOver():
+    print("game over")
+    pygame.quit()
 
 running = True
 while running:
@@ -93,11 +96,11 @@ while running:
     drawApple()
 
     for snakePart in snake_body[1:]:
-        if snake_head[0] == snakePart[0] and snake_head[0] == snakePart[0]:
-            print("game over")
+        if snake_head[0] == snakePart[0] and snake_head[1] == snakePart[1]:
+            gameOver()
     
-    if snake_head[0] <= 0 or snake_head[0] >= window_x+10 or snake_head[1] <= 0 or snake_head[1] >= window_y+10:
-        print("game over")
+    if snake_head[0] < 0 or snake_head[0] >= window_x or snake_head[1] < 0 or snake_head[1] >= window_y:
+        gameOver()
 
     # Refresh game screen
     pygame.display.update()
