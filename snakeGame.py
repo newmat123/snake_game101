@@ -9,10 +9,10 @@ green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
 bagground = pygame.Color(55, 55, 55)
 
-snake_speed = 15
+snake_speed = 5
 
-window_x = 500
-window_y = 500
+window_x = 200
+window_y = 200
 
 pygame.init()
 pygame.display.set_caption("wild Game!!!")
@@ -41,9 +41,9 @@ def drawApple():
     fruit_exist = True
 
 def drawScore(x,y):
-    font = pygame.font.Font('freesansbold.ttf', 25)
+    font = pygame.font.Font('freesansbold.ttf', 15)
 
-    text = font.render('your score is: ' + str(score), True, green, blue)
+    text = font.render('your score is: ' + str(score), True, white)
     textRect = text.get_rect()
     
     textRect.center = (x, y)
@@ -58,7 +58,6 @@ def gameOver():
     
     textRect.center = (window_x // 2, window_y // 2)
     screen.blit(text, textRect)
-    drawScore(window_x // 2, window_y // 2+50)
 
     running = False
 
@@ -100,7 +99,7 @@ while running:
     snake_body.insert(0, list(snake_head))
 
     if snake_head[0] == fruit_pos[0] and snake_head[1] == fruit_pos[1]:
-        score += 10
+        score += 1
         fruit_exist = False
     else:
         snake_body.pop()
@@ -114,7 +113,7 @@ while running:
         pygame.draw.rect(screen, blue, pygame.Rect(pos[0], pos[1], 10, 10))
     pygame.draw.rect(screen, green, pygame.Rect(snake_body[0][0], snake_body[0][1], 10, 10))
     drawApple()
-    drawScore(250,25)
+    drawScore(window_x // 2, 15)
 
     for snakePart in snake_body[1:]:
         if snake_head[0] == snakePart[0] and snake_head[1] == snakePart[1]:
