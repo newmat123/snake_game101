@@ -1,4 +1,5 @@
 import pygame
+import time
 import random
 
 black = pygame.Color(0, 0, 0)
@@ -8,7 +9,7 @@ green = pygame.Color(0, 255, 0)
 blue = pygame.Color(0, 0, 255)
 bagground = pygame.Color(55, 55, 55)
 
-snake_speed = 60
+snake_speed = 15
 
 window_x = 500
 window_y = 500
@@ -23,7 +24,7 @@ fps = pygame.time.Clock()
 snake_head = [100,100]
 snake_body = [[100,100],[90,100],[80,100],[70,100]]
 snake_dir = "RIGHT"
-change_to = snake_dir
+new_dir = snake_dir
 
 fruit_pos = [0, 0]
 fruit_exist = False
@@ -39,9 +40,27 @@ def drawApple():
     pygame.draw.rect(screen, red, pygame.Rect(fruit_pos[0], fruit_pos[1], 10, 10))
     fruit_exist = True
 
+def drawScore(x,y):
+    font = pygame.font.Font('freesansbold.ttf', 25)
+
+    text = font.render('your score is: ' + str(score), True, green, blue)
+    textRect = text.get_rect()
+    
+    textRect.center = (x, y)
+    screen.blit(text, textRect)
+
 def gameOver():
-    print("game over")
-    pygame.quit()
+    global running
+    font = pygame.font.Font('freesansbold.ttf', 32)
+
+    text = font.render('GAME OVER', True, green, blue)
+    textRect = text.get_rect()
+    
+    textRect.center = (window_x // 2, window_y // 2)
+    screen.blit(text, textRect)
+    drawScore(window_x // 2, window_y // 2+50)
+
+    running = False
 
 running = True
 while running:
@@ -52,21 +71,21 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                change_to = "UP"
+                new_dir = "UP"
             if event.key == pygame.K_DOWN:
-                change_to = "DOWN"
+                new_dir = "DOWN"
             if event.key == pygame.K_LEFT:
-                change_to = "LEFT"
+                new_dir = "LEFT"
             if event.key == pygame.K_RIGHT:
-                change_to = "RIGHT"
+                new_dir = "RIGHT"
 
-    if change_to == "UP" and snake_dir != "DOWN":
+    if new_dir == "UP" and snake_dir != "DOWN":
         snake_dir = "UP"
-    elif change_to == "DOWN" and snake_dir != "UP":
+    elif new_dir == "DOWN" and snake_dir != "UP":
         snake_dir = "DOWN"
-    elif change_to == "LEFT" and snake_dir != "RIGHT":
+    elif new_dir == "LEFT" and snake_dir != "RIGHT":
         snake_dir = "LEFT"
-    elif change_to == "RIGHT" and snake_dir != "LEFT":
+    elif new_dir == "RIGHT" and snake_dir != "LEFT":
         snake_dir = "RIGHT"
 
     if snake_dir == "UP":
@@ -81,6 +100,7 @@ while running:
     snake_body.insert(0, list(snake_head))
 
     if snake_head[0] == fruit_pos[0] and snake_head[1] == fruit_pos[1]:
+        score += 10
         fruit_exist = False
     else:
         snake_body.pop()
@@ -94,6 +114,7 @@ while running:
         pygame.draw.rect(screen, blue, pygame.Rect(pos[0], pos[1], 10, 10))
     pygame.draw.rect(screen, green, pygame.Rect(snake_body[0][0], snake_body[0][1], 10, 10))
     drawApple()
+    drawScore(250,25)
 
     for snakePart in snake_body[1:]:
         if snake_head[0] == snakePart[0] and snake_head[1] == snakePart[1]:
@@ -108,5 +129,6 @@ while running:
     # Frame Per Second /Refresh Rate
     fps.tick(snake_speed)
 
+time.sleep(2)
 # Done! Time to quit.
 pygame.quit()
