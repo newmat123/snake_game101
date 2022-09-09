@@ -1,9 +1,9 @@
 import pygame
 import time
+from operator import attrgetter
 from snake import Snake
 
 def checkDir(new_dir, old_dir):
-    # 1 = up, 2 = down, 3 = left, 4 = right
     if new_dir == "UP" and old_dir != "DOWN":
         return "UP"
     elif new_dir == "DOWN" and old_dir != "UP":
@@ -26,8 +26,16 @@ if __name__ == '__main__':
     window_y = 500
     new_dir = "RIGHT"
     
-    snake1 = Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500)
-    snake2 = Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500)
+    snakes = [
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
+    Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500)
+    ]
 
     score_x = window_x // 2
     score_y = 15
@@ -57,29 +65,36 @@ if __name__ == '__main__':
                 if event.key == pygame.K_RIGHT:
                     new_dir = "RIGHT"
 
-        snake1.moveSnake(checkDir(new_dir, snake1.getSnakeDir()))
-
-        snake2.moveSnake(checkDir(new_dir, snake2.getSnakeDir()))
-        if snake2.hitApple():
-            print(snake2.getScore())
-        snake2.getApplePos()
-
+        for i, snake in enumerate(snakes):
+            snake.moveSnake(checkDir(new_dir, snake.getSnakeDir()))
+            # below not nessecary
+            if snake.hitApple():
+                #print("snake" + str(i) + ": "+ str(snake.test()[0]) +", "+ str(snake.test()[1]))
+                print("snake" + str(i) + ": " + str(snake.getScore()))
+        
         # draw frame
         screen.fill(bagground) 
         # Draw snake and apple
-        for pos in snake1.getSnakeBody():
+
+        # gets the snake with the higest score
+        theSnake = max(snakes, key=attrgetter('score_'))
+
+        for pos in theSnake.getSnakeBody():
             pygame.draw.rect(screen, blue, pygame.Rect(pos[0], pos[1], 10, 10))
-        pygame.draw.rect(screen, red, pygame.Rect(snake1.getApplePos()[0], snake1.getApplePos()[1], 10, 10))
+        pygame.draw.rect(screen, red, pygame.Rect(theSnake.getApplePos()[0], theSnake.getApplePos()[1], 10, 10))
         
+        for snake in snakes:
+            snake.getApplePos()
+
         #draw score
         font = pygame.font.Font('freesansbold.ttf', score_y)
-        text = font.render('your score is: ' + str(snake1.getScore()), True, white)
+        text = font.render('your score is: ' + str(theSnake.getScore()), True, white)
         textRect = text.get_rect()
         textRect.center = (score_x, score_y)
         screen.blit(text, textRect)
         
         # draw Game over
-        if snake1.snakeDeath():
+        if theSnake.snakeDeath():
             font = pygame.font.Font('freesansbold.ttf', 32)
 
             text = font.render('GAME OVER', True, green, blue)
