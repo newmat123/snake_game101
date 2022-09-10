@@ -3,18 +3,6 @@ import time
 from operator import attrgetter
 from snake import Snake
 
-def checkDir(new_dir, old_dir):
-    if new_dir == "UP" and old_dir != "DOWN":
-        return "UP"
-    elif new_dir == "DOWN" and old_dir != "UP":
-        return "DOWN"
-    elif new_dir == "LEFT" and old_dir != "RIGHT":
-        return "LEFT"
-    elif new_dir == "RIGHT" and old_dir != "LEFT":
-        return "RIGHT"
-    else:
-        return old_dir
-
 if __name__ == '__main__':
     white = pygame.Color(255, 255, 255)
     red = pygame.Color(255, 0, 0)
@@ -66,11 +54,11 @@ if __name__ == '__main__':
                     new_dir = "RIGHT"
 
         for i, snake in enumerate(snakes):
-            snake.moveSnake(checkDir(new_dir, snake.getSnakeDir()))
+            snake.moveSnake(new_dir)
             # below not nessecary
             if snake.hitApple():
-                #print("snake" + str(i) + ": "+ str(snake.test()[0]) +", "+ str(snake.test()[1]))
-                print("snake" + str(i) + ": " + str(snake.getScore()))
+                #print(snake)
+                print("snake" + str(i) + ": " + str(snake.score_))
         
         # draw frame
         screen.fill(bagground) 
@@ -79,16 +67,16 @@ if __name__ == '__main__':
         # gets the snake with the higest score
         theSnake = max(snakes, key=attrgetter('score_'))
 
-        for pos in theSnake.getSnakeBody():
+        for pos in theSnake.snake_body_:
             pygame.draw.rect(screen, blue, pygame.Rect(pos[0], pos[1], 10, 10))
-        pygame.draw.rect(screen, red, pygame.Rect(theSnake.getApplePos()[0], theSnake.getApplePos()[1], 10, 10))
+        pygame.draw.rect(screen, red, pygame.Rect(theSnake.apple_pos_[0], theSnake.apple_pos_[1], 10, 10))
         
         for snake in snakes:
             snake.getApplePos()
 
         #draw score
         font = pygame.font.Font('freesansbold.ttf', score_y)
-        text = font.render('your score is: ' + str(theSnake.getScore()), True, white)
+        text = font.render('your score is: ' + str(theSnake.score_), True, white)
         textRect = text.get_rect()
         textRect.center = (score_x, score_y)
         screen.blit(text, textRect)
