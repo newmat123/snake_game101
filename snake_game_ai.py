@@ -1,3 +1,6 @@
+"""
+used for placing the apple at a random location
+"""
 import random
 
 class SnakeAi():

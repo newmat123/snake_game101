@@ -1,3 +1,6 @@
+"""
+used for placing the apple at a random location
+"""
 import random
 
 class Snake():
@@ -10,8 +13,8 @@ class Snake():
     window_y_ : int
     snake_head_ : [int, int]
     snake_body_ : [[int,int],[int,int],...]
-        an array of the snakes body in x and y 
-    snake_dir_ : str 
+        an array of the snakes body in x and y
+    snake_dir_ : str
         up, down, left and right
     apple_pos_ : [int, int]
     apple_exist_ : bool
@@ -41,18 +44,19 @@ class Snake():
         self.score_ = 0
 
     def __str__(self):
-      return f"""
+        return f"""
         Snake:
-          snake score : {self.score_}
-          snake dir: {self.snake_dir_}
-          snake head: {self.snake_head_} snake body: {self.snake_body_}
-          apple pos: {self.apple_pos_} : {self.apple_exist_}
-      """  
+            snake score : {self.score_}
+            snake dir: {self.snake_dir_}
+            snake head: {self.snake_head_} snake body: {self.snake_body_}
+            apple pos: {self.apple_pos_} : {self.apple_exist_}
+        """
 
-    def __gt__(self, other):#maybe
+    def __gt__(self, other):
         return True if self.score_ > other.score_ else False
 
-    def moveSnake(self, new_snake_dir):
+    def move_snake(self, new_snake_dir) -> None:
+        """moves the snake in a given direction"""
         if new_snake_dir == "UP" and self.snake_dir_ != "DOWN":
             self.snake_dir_ = "UP"
         elif new_snake_dir == "DOWN" and self.snake_dir_ != "UP":
@@ -70,34 +74,41 @@ class Snake():
             self.snake_head_[0] -= 10
         elif self.snake_dir_ == "RIGHT":
             self.snake_head_[0] += 10
-        
+
         self.snake_body_.insert(0, list(self.snake_head_))
 
-        if self.hitApple():
+        if self.hit_apple():
             self.score_ += 1
             self.apple_exist_ = False
         else:
             self.snake_body_.pop()
 
-    def hitApple(self):
+    def hit_apple(self) -> bool:
+        """checks if the snake hit an apple"""
         if self.snake_head_[0] == self.apple_pos_[0] and self.snake_head_[1] == self.apple_pos_[1]:
             return True
         else:
             return False
-    
-    def snakeDeath(self):
-        for snakePart in self.snake_body_[1:]:
-            if self.snake_head_[0] == snakePart[0] and self.snake_head_[1] == snakePart[1]:
+
+    def snake_death(self) -> bool:
+        """returns true is the snake is dead and false if not"""
+        for snake_part in self.snake_body_[1:]:
+            if self.snake_head_[0] == snake_part[0] and self.snake_head_[1] == snake_part[1]:
                 return True
-        
-        if self.snake_head_[0] < 0 or self.snake_head_[0] >= self.window_x_ or self.snake_head_[1] < 0 or self.snake_head_[1] >= self.window_y_:
+
+        if self.snake_head_[0] < 0 or self.snake_head_[0] >= self.window_x_: # checks the x axsis
+            return True
+        if self.snake_head_[1] < 0 or self.snake_head_[1] >= self.window_y_: # checks the y axsis
             return True
         return False
 
-    def getApplePos(self):
+    def get_apple_pos(self) -> list:
+        """replaces the apple if needed and returns the pos of the apple."""
         if not self.apple_exist_:
             while self.apple_pos_ in self.snake_body_:
-                self.apple_pos_ = [random.randrange(1, (self.window_x_//10)) * 10, random.randrange(1, (self.window_y_//10)) * 10]
-        
+                self.apple_pos_ = [
+                    random.randrange(1, (self.window_x_//10)) * 10,
+                    random.randrange(1, (self.window_y_//10)) * 10
+                    ]
         self.apple_exist_ = True
         return self.apple_pos_
