@@ -1,67 +1,70 @@
-import pygame
+"""
+libaries used to run the main file
+"""
 import time
 from operator import attrgetter
 from snake import Snake
+import pygame
 
 if __name__ == '__main__':
+    WINDOW_X = 500
+    WINDOW_Y = 500
+    NEW_DIR = "RIGHT"
+
+    SCORE_X = WINDOW_X // 2
+    SCORE_Y = 15
+    GAME_SPEED = 5
+
     white = pygame.Color(255, 255, 255)
     red = pygame.Color(255, 0, 0)
     green = pygame.Color(0, 255, 0)
     blue = pygame.Color(0, 0, 255)
     bagground = pygame.Color(55, 55, 55)
 
-    window_x = 500
-    window_y = 500
-    new_dir = "RIGHT"
-    
-    snakes = [
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500), 
-        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500)
-    ]
-
-    score_x = window_x // 2
-    score_y = 15
-
     pygame.init()
     pygame.display.set_caption("wild Game!!!")
-    screen = pygame.display.set_mode((window_x, window_y))
+    screen = pygame.display.set_mode((WINDOW_X, WINDOW_Y))
 
     # FPS (frames per second) controller
     fps = pygame.time.Clock()
-    game_speed = 5
-    
-    running = True
-    while running:
+
+    snakes = [
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500),
+        Snake([100,100], [[100,100],[90,100],[80,100],[70,100]], "RIGHT", 500, 500)
+    ]
+
+    RUNNING = True
+    while RUNNING:
 
         # handling key events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                RUNNING = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    new_dir = "UP"
+                    NEW_DIR = "UP"
                 if event.key == pygame.K_DOWN:
-                    new_dir = "DOWN"
+                    NEW_DIR = "DOWN"
                 if event.key == pygame.K_LEFT:
-                    new_dir = "LEFT"
+                    NEW_DIR = "LEFT"
                 if event.key == pygame.K_RIGHT:
-                    new_dir = "RIGHT"
+                    NEW_DIR = "RIGHT"
 
         for i, snake in enumerate(snakes):
-            snake.moveSnake(new_dir)
+            snake.move_snake(NEW_DIR)
             # below not nessecary
-            if snake.hitApple():
+            if snake.hit_apple():
                 #print(snake)
                 print("snake" + str(i) + ": " + str(snake.score_))
-        
+
         # draw frame
-        screen.fill(bagground) 
+        screen.fill(bagground)
         # Draw snake and apple
 
         # gets the snake with the higest score
@@ -69,33 +72,34 @@ if __name__ == '__main__':
 
         for pos in theSnake.snake_body_:
             pygame.draw.rect(screen, blue, pygame.Rect(pos[0], pos[1], 10, 10))
-        pygame.draw.rect(screen, red, pygame.Rect(theSnake.apple_pos_[0], theSnake.apple_pos_[1], 10, 10))
-        
+        pygame.draw.rect(screen, red,
+        pygame.Rect(theSnake.apple_pos_[0], theSnake.apple_pos_[1], 10, 10))
+
         for snake in snakes:
-            snake.getApplePos()
+            snake.get_apple_pos()
 
         #draw score
-        font = pygame.font.Font('freesansbold.ttf', score_y)
+        font = pygame.font.Font('freesansbold.ttf', SCORE_Y)
         text = font.render('your score is: ' + str(theSnake.score_), True, white)
         textRect = text.get_rect()
-        textRect.center = (score_x, score_y)
+        textRect.center = (SCORE_X, SCORE_Y)
         screen.blit(text, textRect)
-        
+
         # draw Game over
-        if theSnake.snakeDeath():
+        if theSnake.snake_death():
             font = pygame.font.Font('freesansbold.ttf', 32)
 
             text = font.render('GAME OVER', True, green, blue)
             textRect = text.get_rect()
-            
-            textRect.center = (window_x // 2, window_y // 2)
+
+            textRect.center = (WINDOW_X // 2, WINDOW_Y // 2)
             screen.blit(text, textRect)
 
-            running = False
-       
+            RUNNING = False
+
         # Refresh game screen and Frame Per Second /Refresh Rate
         pygame.display.update()
-        fps.tick(game_speed)
+        fps.tick(GAME_SPEED)
 
     time.sleep(2)
     pygame.quit()
