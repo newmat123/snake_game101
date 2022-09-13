@@ -87,8 +87,7 @@ class Snake():
         """checks if the snake hit an apple"""
         if self.snake_head_[0] == self.apple_pos_[0] and self.snake_head_[1] == self.apple_pos_[1]:
             return True
-        else:
-            return False
+        return False
 
     def snake_death(self) -> bool:
         """returns true is the snake is dead and false if not"""
