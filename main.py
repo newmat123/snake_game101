@@ -6,6 +6,7 @@ from operator import attrgetter
 from snake import Snake
 import pygame
 
+
 if __name__ == '__main__':
     WINDOW_X = 500
     WINDOW_Y = 500

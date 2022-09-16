@@ -1,5 +1,4 @@
 
-
 class CardGameEnv(py_environment.PyEnvironment):
 
   def __init__(self):
