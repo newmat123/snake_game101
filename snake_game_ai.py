@@ -18,6 +18,13 @@ class SnakeAi():
         self.apple_exist_ = False
         self.score_ = 0
 
+        self._action_spec = array_spec.BoundedArraySpec(
+            shape=(), dtype=np.int32, minimum=0, maximum=1, name='action')
+        self._observation_spec = array_spec.BoundedArraySpec(
+            shape=(1,), dtype=np.int32, minimum=0, name='observation')
+        self.state_ = 0
+        self.episode_ended_ = False
+
     #[1,0,0] fwd, right, left  bool only one true and tow false
     def move_snake(self, new_snake_dir) -> None:
         """moves the snake in a given direction"""
@@ -42,15 +49,6 @@ class SnakeAi():
                         self.snake_dir_ = 'DOWN'
                     case 'RIGHT':
                         self.snake_dir_ = 'UP'
-
-        # if new_snake_dir == "UP" and self.snake_dir_ != "DOWN":
-        #     self.snake_dir_ = "UP"
-        # elif new_snake_dir == "DOWN" and self.snake_dir_ != "UP":
-        #     self.snake_dir_ = "DOWN"
-        # elif new_snake_dir == "LEFT" and self.snake_dir_ != "RIGHT":
-        #     self.snake_dir_ = "LEFT"
-        # elif new_snake_dir == "RIGHT" and self.snake_dir_ != "LEFT":
-        #     self.snake_dir_ = "RIGHT"
 
         if self.snake_dir_ == "UP":
             self.snake_head_[1] -= 10
@@ -98,3 +96,46 @@ class SnakeAi():
 
         self.apple_exist_ = True
         return self.apple_pos_
+
+    def action_spec(self):
+        return self.action_spec_
+
+    def observation_spec(self):
+        return self.observation_spec_
+
+    def reset(self) -> None:
+        """ resets envioment """
+        self.state_ = 0
+        self.episode_ended_ = False
+        #return ts.restart(np.array([self._state], dtype=np.int32))
+
+    #[1,0,0] fwd, right, left  bool only one true and tow false
+    def step(self, new_snake_dir) -> None:
+        """moves the snake in a given direction"""
+
+        if self.episode_ended_:
+            # The last action ended the episode. Ignore the current action and start
+            # a new episode.
+            return self.reset()
+
+        # checks input
+        if new_snake_dir[0] == 1:
+            pass
+        elif new_snake_dir[1] == 1:
+            pass
+        elif new_snake_dir[2] == 1:
+            pass
+        else:
+            raise ValueError('`action` not a valid dirrection.')
+
+        self.move_snake(new_snake_dir)
+
+        if self.snake_death():
+            self.episode_ended_ = True
+
+        if self.episode_ended_:
+            reward = (self.score_*10) - self.state_
+            #return ts.termination(np.array([self._state], dtype=np.int32), reward)
+        #return ts.transition(np.array([self._state], dtype=np.int32), reward=0.0, discount=1.0)
+
+        raise ValueError('somthin went wrong')
