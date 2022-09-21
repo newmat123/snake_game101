@@ -2,6 +2,10 @@
 used for placing the apple at a random location
 """
 import random
+import numpy as np
+
+from tf_agents.specs import array_spec
+from tf_agents.trajectories import time_step as ts
 
 class SnakeAi():
     """
@@ -61,27 +65,15 @@ class SnakeAi():
 
         self.snake_body_.insert(0, list(self.snake_head_))
 
-        if self.hit_apple():
-            self.score_ += 1
-            self.apple_exist_ = False
-        else:
+        if not self.hit_apple():
             self.snake_body_.pop()
 
     def hit_apple(self) -> bool:
         """checks if the snake hit an apple"""
         if self.snake_head_[0] == self.apple_pos_[0] and self.snake_head_[1] == self.apple_pos_[1]:
-            return True
-        return False
-
-    def snake_death(self):
-        """returns true is the snake is dead and false if not"""
-        for snake_part in self.snake_body_[1:]:
-            if self.snake_head_[0] == snake_part[0] and self.snake_head_[1] == snake_part[1]:
-                return True
-
-        if self.snake_head_[0] < 0 or self.snake_head_[0] >= self.window_x_: # checks the x axsis
-            return True
-        if self.snake_head_[1] < 0 or self.snake_head_[1] >= self.window_y_: # checks the y axsis
+            # self.apple_exist_ = False
+            # self.score_ += 1
+            # self.get_apple_pos()
             return True
         return False
 
@@ -97,6 +89,18 @@ class SnakeAi():
         self.apple_exist_ = True
         return self.apple_pos_
 
+    def snake_death(self) -> bool:
+        """returns true is the snake is dead and false if not"""
+        for snake_part in self.snake_body_[1:]:
+            if self.snake_head_[0] == snake_part[0] and self.snake_head_[1] == snake_part[1]:
+                return True
+
+        if self.snake_head_[0] < 0 or self.snake_head_[0] >= self.window_x_: # checks the x axsis
+            return True
+        if self.snake_head_[1] < 0 or self.snake_head_[1] >= self.window_y_: # checks the y axsis
+            return True
+        return False
+
     def action_spec(self):
         return self.action_spec_
 
@@ -107,10 +111,10 @@ class SnakeAi():
         """ resets envioment """
         self.state_ = 0
         self.episode_ended_ = False
-        #return ts.restart(np.array([self._state], dtype=np.int32))
+        return ts.restart(np.array([self._state], dtype=np.int32))
 
     #[1,0,0] fwd, right, left  bool only one true and tow false
-    def step(self, new_snake_dir) -> None:
+    def step(self, new_snake_dir) -> any:
         """moves the snake in a given direction"""
 
         if self.episode_ended_:
@@ -130,12 +134,20 @@ class SnakeAi():
 
         self.move_snake(new_snake_dir)
 
+        reward = 0
+        if self.hit_apple():
+            self.apple_exist_ = False
+            self.score_ += 1
+            reward = 10
+            self.get_apple_pos()
+
         if self.snake_death():
             self.episode_ended_ = True
+            reward = -10
 
         if self.episode_ended_:
             reward = (self.score_*10) - self.state_
-            #return ts.termination(np.array([self._state], dtype=np.int32), reward)
-        #return ts.transition(np.array([self._state], dtype=np.int32), reward=0.0, discount=1.0)
+            return ts.termination(np.array([self.state_], dtype=np.int32), reward)
+        return ts.transition(np.array([self.state_], dtype=np.int32), reward=0.0, discount=1.0)
 
         raise ValueError('somthin went wrong')
