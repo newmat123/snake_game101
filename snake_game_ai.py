@@ -91,21 +91,23 @@ class SnakeAi():
 
     def snake_death(self) -> bool:
         """returns true is the snake is dead and false if not"""
+        #checks if the snake hits it self
         for snake_part in self.snake_body_[1:]:
             if self.snake_head_[0] == snake_part[0] and self.snake_head_[1] == snake_part[1]:
                 return True
 
+        #checks if the snake is out of its bounderys 
         if self.snake_head_[0] < 0 or self.snake_head_[0] >= self.window_x_: # checks the x axsis
             return True
         if self.snake_head_[1] < 0 or self.snake_head_[1] >= self.window_y_: # checks the y axsis
             return True
         return False
 
-    def action_spec(self):
-        return self.action_spec_
+    # def action_spec(self):
+    #     return self.action_spec_
 
-    def observation_spec(self):
-        return self.observation_spec_
+    # def observation_spec(self):
+    #     return self.observation_spec_
 
     def reset(self) -> None:
         """ resets envioment """
